@@ -358,7 +358,7 @@ func asReaderAt(r io.Reader) (io.ReaderAt, error) {
 	return bytes.NewReader(b), nil
 }
 
-func init() {
+func Init() {
 	libde265.Init()
 	// they check for "ftyp" at the 5th bytes, let's do the same...
 	// https://github.com/strukturag/libheif/blob/master/libheif/heif.cc#L94
