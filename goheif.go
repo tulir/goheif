@@ -8,9 +8,9 @@ import (
 	"image/color"
 	"io"
 
-	"github.com/jdeng/goheif/dav1d"
-	"github.com/jdeng/goheif/heif"
-	"github.com/jdeng/goheif/libde265"
+	"go.mau.fi/goheif/dav1d"
+	"go.mau.fi/goheif/heif"
+	"go.mau.fi/goheif/libde265"
 )
 
 // SafeEncoding uses more memory but seems to make

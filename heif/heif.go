@@ -27,7 +27,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/jdeng/goheif/heif/bmff"
+	"go.mau.fi/goheif/heif/bmff"
 )
 
 // File represents a HEIF file.

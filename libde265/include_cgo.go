@@ -18,8 +18,8 @@ package libde265
 
 import (
 	// Prevent go tooling from stripping out the c source files.
-	_ "github.com/jdeng/goheif/libde265/extra"
-	_ "github.com/jdeng/goheif/libde265/libde265"
-	_ "github.com/jdeng/goheif/libde265/libde265/arm"
-	_ "github.com/jdeng/goheif/libde265/libde265/x86"
+	_ "go.mau.fi/goheif/libde265/extra"
+	_ "go.mau.fi/goheif/libde265/libde265"
+	_ "go.mau.fi/goheif/libde265/libde265/arm"
+	_ "go.mau.fi/goheif/libde265/libde265/x86"
 )
