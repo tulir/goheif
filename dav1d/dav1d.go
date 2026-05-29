@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"image"
 	"runtime"
+	"syscall"
 	"unsafe"
 )
 
@@ -76,6 +77,10 @@ func (dec *Decoder) Reset() {
 	}
 }
 
+func isEagain(ret C.int) bool {
+	return ret == -C.int(syscall.EAGAIN)
+}
+
 func (dec *Decoder) DecodeImage(data []byte) (image.Image, error) {
 	if dec.hasPicture {
 		fmt.Printf("previous image may leak")
@@ -102,14 +107,14 @@ func (dec *Decoder) DecodeImage(data []byte) (image.Image, error) {
 		if ret == 0 {
 			break // Data consumed successfully
 		}
-		if ret == -11 { // DAV1D_ERR(EAGAIN) - decoder buffer full, need to get pictures first
+		if isEagain(ret) { // DAV1D_ERR(EAGAIN) - decoder buffer full, need to get pictures first
 			// Try to get a picture to free up decoder buffer
 			var tempPicture C.Dav1dPicture
 			picRet := C.dav1d_get_picture(dec.ctx, &tempPicture)
 			if picRet == 0 {
 				C.dav1d_picture_unref(&tempPicture) // We don't need this intermediate picture
 				continue                            // Try sending data again
-			} else if picRet != -11 { // Not EAGAIN, real error
+			} else if !isEagain(picRet) { // Not EAGAIN, real error
 				return nil, fmt.Errorf("intermediate get_picture error: %d", picRet)
 			}
 			// If picRet == EAGAIN, continue the loop to try send_data again
@@ -126,7 +131,7 @@ func (dec *Decoder) DecodeImage(data []byte) (image.Image, error) {
 		if ret == 0 {
 			break // Successfully got picture
 		}
-		if ret == -11 { // DAV1D_ERR(EAGAIN) - not enough data yet, but this is normal
+		if isEagain(ret) { // DAV1D_ERR(EAGAIN) - not enough data yet, but this is normal
 			if i == maxRetries-1 {
 				return nil, fmt.Errorf("decoder unable to produce picture after %d attempts (may need more data)", maxRetries)
 			}
