@@ -22,8 +22,8 @@
 #define CONFIG_MACOS_KPERF 0
 
 /* Platform and architecture validation */
-#if !(defined(__linux__) || defined(__APPLE__) || defined(_WIN32))
-#error "Unsupported platform. Only Linux, macOS, and Windows are supported."
+#if !(defined(__linux__) || defined(__APPLE__) || defined(_WIN32) || defined(__FreeBSD__))
+#error "Unsupported platform. Only Linux, macOS, FreeBSD, and Windows are supported."
 #endif
 
 #if !(defined(__x86_64__) || defined(_M_X64) || defined(__aarch64__) || defined(_M_ARM64) || defined(__riscv))
@@ -59,7 +59,11 @@
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
 #define HAVE_IO_H 0
+#if defined(__FreeBSD__)
+#define HAVE_PTHREAD_NP_H 1
+#else
 #define HAVE_PTHREAD_NP_H 0
+#endif
 
 /* dlsym support */
 #if defined(__linux__)
